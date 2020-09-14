@@ -3,18 +3,7 @@ import React, { useState, useEffect } from "react";
 import MainView from "../components/MainView/MainView";
 import MainTopic from "../components/MainTopic/MainTopic";
 
-const getTodayInfo = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const date = today.getDate();
-
-  return {
-    year,
-    month,
-    date,
-  };
-};
+import getTodayInfo from "../utils/getDate";
 
 const Home = () => {
   // topic
