@@ -1,4 +1,4 @@
-const getTodayInfo = () => {
+export const getTodayInfo = () => {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
@@ -11,4 +11,13 @@ const getTodayInfo = () => {
   };
 };
 
-export default getTodayInfo;
+export const getTimeInfo = () => {
+  const today = new Date();
+  const hours = today.getHours();
+  const minutes = today.getMinutes();
+
+  return {
+    hours,
+    minutes,
+  };
+};
