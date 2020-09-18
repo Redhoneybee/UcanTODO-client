@@ -8,3 +8,6 @@ export const SUBTOPICSINFO = "subTopicInfo";
 
 // MAX and MIN
 export const MAXSUBTOPICS = 20;
+
+// error
+export const EMPTY_LOCALSTORAGE = "emptylocalstorage";

@@ -15,14 +15,14 @@ const MainTopic = ({ isEmptyMainTopic, callback, mainTopic }) => {
 
   const handlerChange = (e) => {
     const { value } = e.target;
-    console.log(state.maintopic, state.disabled);
+    // console.log(state.maintopic, state.disabled);
     setState((prev) => ({
       ...prev,
       maintopic: value,
     }));
 
     const valueLen = state.maintopic.length;
-    if (valueLen > 4) {
+    if (valueLen >= 4) {
       setState((prev) => ({
         ...prev,
         disabled: false,
@@ -39,9 +39,6 @@ const MainTopic = ({ isEmptyMainTopic, callback, mainTopic }) => {
     e.preventDefault();
 
     if (state.maintopic) callback(state.maintopic);
-    else {
-      console.log("wrong access");
-    }
   };
 
   return (

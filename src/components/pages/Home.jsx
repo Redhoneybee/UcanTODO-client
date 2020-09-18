@@ -2,79 +2,107 @@ import React, { useState, useEffect } from "react";
 
 import MainView from "../components/MainView/MainView";
 import MainTopic from "../components/MainTopic/MainTopic";
-
-import getTodayInfo from "../utils/getDate";
+import SubTopic from "../components/SubTopic/SubTopic";
+import { getTodayInfo } from "../utils/useDate";
+import {
+  saveToLocalStorage,
+  loadToLocalStorage,
+  removeToLocalStorage,
+} from "../utils/useLocalStorage";
+import {
+  NUMBER,
+  STRING,
+  MAINTOPICINFO,
+  SUBTOPICSINFO,
+  EMPTY_LOCALSTORAGE,
+} from "../types";
 
 const Home = () => {
-  // topic
-  const [mainTopicInfo, setMainTopicInfo] = useState({ topic: "" });
-
+  const initializedTopic = {
+    today: {},
+    desc: "",
+  };
+  const [mainTopic, setMainTopic] = useState(initializedTopic);
+  const [loading, setLoading] = useState(false);
+  // mainTopic is empty and isn't empty
   const isEmptyMainTopic = () => {
-    const l = mainTopicInfo.topic.length;
-
-    if (l === 0) return true;
+    if (!mainTopic.desc) return true;
     return false;
   };
 
-  useEffect(() => {
-    const items = localStorage.getItem("mainTopicInfo");
-    if (items) {
-      const info = JSON.parse(items);
-
-      const todayInfo = getTodayInfo();
-
-      if (
-        todayInfo.year !== info.today.year ||
-        todayInfo.month !== info.today.month ||
-        todayInfo.date !== info.today.date
-      ) {
-        // this time is different from localStorage time
-        setMainTopicInfo({
-          today: {},
-          topic: "",
-        });
-        localStorage.removeItem("mainTopicInfo");
-      } else {
-        if (isEmptyMainTopic()) {
-          setMainTopicInfo({
-            today: {
-              year: info.today.year,
-              month: info.today.month,
-              date: info.today.date,
-            },
-            topic: info.topic,
-          });
-        }
-      }
+  const isValidMainTopic = (_topic) => {
+    if (_topic.today === undefined || _topic.desc === undefined) {
+      return false;
+    } else if (
+      typeof _topic.today.year !== NUMBER ||
+      typeof _topic.today.month !== NUMBER ||
+      typeof _topic.today.date !== NUMBER ||
+      typeof _topic.desc !== STRING
+    ) {
+      return false;
     }
-  }, []);
+    return true;
+  };
+  const isValidDate = (_topic) => {
+    const todayInfo = getTodayInfo();
+    if (
+      _topic.today.year !== todayInfo.year ||
+      _topic.today.month !== todayInfo.month ||
+      _topic.today.date !== todayInfo.date
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const initTopics = () => {
+    removeToLocalStorage(MAINTOPICINFO);
+    removeToLocalStorage(SUBTOPICSINFO);
+  };
 
   useEffect(() => {
     if (!isEmptyMainTopic()) {
-      localStorage.setItem("mainTopicInfo", JSON.stringify(mainTopicInfo));
+      saveToLocalStorage(MAINTOPICINFO, mainTopic);
     }
-  }, [mainTopicInfo]);
+    if (loading === false) {
+      const _topic = loadToLocalStorage(MAINTOPICINFO);
+      if (typeof _topic !== STRING && _topic !== EMPTY_LOCALSTORAGE) {
+        if (isValidMainTopic(_topic)) {
+          if (isValidDate(_topic)) {
+            // before date
+            initTopics();
+          } else {
+            setMainTopic(_topic);
+          }
+        }
+      }
+    }
+    setLoading(true);
+  }, [mainTopic]);
 
-  const isMainTopic = (maintopic) => {
+  const createMainTopic = (desc) => {
     const todayInfo = getTodayInfo();
 
-    setMainTopicInfo({
+    const _topic = {
       today: {
         year: todayInfo.year,
         month: todayInfo.month,
         date: todayInfo.date,
       },
-      topic: maintopic,
-    });
+      desc: desc,
+    };
+    setMainTopic(_topic);
+    console.log("hi");
   };
 
   return (
     <MainView>
       <MainTopic
         isEmptyMainTopic={isEmptyMainTopic}
-        callback={isMainTopic}
-        mainTopic={mainTopicInfo.topic}
+        callback={createMainTopic}
+        mainTopic={mainTopic.desc}
       ></MainTopic>
+      {!isEmptyMainTopic() && <SubTopic></SubTopic>}
     </MainView>
   );
 };
