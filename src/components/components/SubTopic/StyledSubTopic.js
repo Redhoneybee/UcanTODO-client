@@ -3,26 +3,23 @@ import style from "styled-components";
 export const SubTopicBar = style.div`
     position : absolute;
     width : 1200px;
-    height : 600px;
-
-    top : 32%;
+    height : 400px;
+    top : 50%;
     left : 50%;
-    
     margin : 0 0 0 -600px;
-    
-    overflow : scroll;
-    
-    border : 1px solid gray;
-
+    overflow : auto;
+    border-radius : 20px;
+    background-color : #f4f4f4;
     @media screen and (max-width : 768px){
         width : 500px;
-        height : 500px;
+        height : 400px;
+        top : 45%;
         margin-left : -250px;
     }
 
     @media screen and (max-width : 414px){
         width : 350px;
-        height : 450px;
+        height : 400px;
         margin-left : -175px;
     }
     
@@ -31,16 +28,18 @@ export const SubTopicBar = style.div`
 export const SubTopicContent = style.div`
     position : relative;
     width : 1100px;
-    height : 150px;
+    height : 180px;
     margin : 10px 50px;
     border-radius : 10px;
     background-color : #fddb3a;
     font-size : 22px;
-    .plusBtn{
+    cursor : pointer;
+    z-index : 1;
+    .add-btn{
         position : absolute;
         background-color : tarnsparent;
-        width : 1100px;
-        height : 150px;
+        width : inherit;
+        height : inherit;
         color : white;
         font-size : 65px;
         line-height : 150px;
@@ -63,6 +62,7 @@ export const SubTopicContent = style.div`
         margin : 5px 5px 0 0;
         color : black;
         font-size : 28px;
+        z-index : 5;
         .btn{
             cursor : pointer;
         }
@@ -72,22 +72,28 @@ export const SubTopicContent = style.div`
     }
     .topic{
         position : relative;
+        display : -webkit-box;
+        -webkit-line-clamp : 3;
+        -webkit-box-orient : vertical;
         width : 1080px;
-        height : 120px;
-        line-height : 65px;
+        height : 110px;
+        line-height : 40px;
         text-align : center;
         top : 20%;
         margin : 0;
         padding : 0 10px 15px 10px;
+        overflow : hidden;
+        text-overflow : ellipsis;
         word-break : break-all;
         font-weight : bold;
-        font-size : 28px;
+        font-size : 24px;
+
     }
     .addSubTopicBar{
         position : absolute;
         padding : 10px 20px;
-        width : 1060px;
-        height : 130px;
+        width : 1060px;;
+        height : 160px;
         text-align : center;
         font-size : 22px;
         background-color : transparent;
@@ -96,27 +102,59 @@ export const SubTopicContent = style.div`
         font-weight : bold;
         :focus{
             outline : none;
-            background-color : white;
+            background-color :#fddb3a;
         }
     }
 
-
+   
+    .coverBackgroundOfNoChecked{
+        position : absolute;
+        top : 0;
+        left : 0;
+        width : inherit;
+        height : 0;
+        border-radius : 20px;
+        background : black;
+        opacity : 0.4;
+        transition : all .4s linear;
+    }
+    .checkedCoverofNoChecked{
+        position : absolute;
+        top : 50%;
+        left : 50%;
+        width : 120px;
+        height : 120px;
+        color : #c10000;
+        opacity : 0;
+        margin : -6vh 0 0 -50px;
+        transition : all .6s linear;
+    }
+    
+    :hover{
+        .coverBackgroundOfNoChecked{
+            height : inherit;
+        }
+        .checkedCoverofNoChecked{
+            opacity : 0.8;
+        }
+    }
+      
     @media screen and (max-width : 768px){
         width : 450px;
-        height : 100px;
-        margin : 5px 25px;
+        height : 80px;
+        margin : 10px 25px;
         
-        .plusBtn{
-            width : 450px;
-            height : 100px;
+        .add-btn{
+            width : inherit;
+            height : inherit;
             font-size : 40px;
-            line-height : 100px;
+            line-height : 80px;
         }
         .addSubTopicBar{
+            width : 430px;
+            height : 60px;
             position : absolute;
             padding : 5px 10px;
-            width : 430px;
-            height : 90px;
             font-size : 20px;
         }
 
@@ -125,31 +163,37 @@ export const SubTopicContent = style.div`
         }
         .topic{
             width : 440px;
-            height : 75px;    
-            line-height : 35px;
+            height : 50px;    
+            line-height : 25px;
             top : 25%;
             margin-right : 0;
             padding : 0 5px 5px 5px;
-            font-size : 18px;   
+            font-size : 18px;
+        }
+        .checkedCover{
+            width : 60px;
+            height : 60px;
+            opacity : 0;
+            margin : -3vh 0 0 -30px;
         }
     }
 
     @media screen and (max-width : 414px){
         width : 300px;
-        height : 100px;
-        margin : 5px 25px;
+        height : 80px;
+        margin : 10px 25px;
 
-        .plusBtn{
-            width : 300px;
-            height : 100px;
-            font-size : 35px;
-            line-height : 100px;
+        .add-btn{
+            width : inherit;
+            height : inherit;
+            font-size : 24px;
+            line-height : 80px;
         }
         .addSubTopicBar{
+            width : 280px;
+            height : 70px;
             position : absolute;
             padding : 5px 10px;
-            width : 280px;
-            height : 90px;
             font-size : 20px;
         }
 
