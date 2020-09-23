@@ -12,7 +12,6 @@ export const StyledMainTopicAnswerBar = style.div`
     background-color : #fddb3a;
     border-radius : 10px;
     
-    
     .buttonDisabled{
         position : absolute;
         border : none;
@@ -21,7 +20,9 @@ export const StyledMainTopicAnswerBar = style.div`
         background-color : #ddd;
         border-radius : 100%;
         cursor : pointer;
-
+        color : white;
+        font-size : 24px;
+        font-weight : bold;
         left : 50%;
         margin : 3vh 0 0 -25px;
 
@@ -36,7 +37,9 @@ export const StyledMainTopicAnswerBar = style.div`
         background-color : #fddb3a;
         border-radius : 10px;
         cursor : pointer;
-
+        color : white;
+        font-size : 24px;
+        font-weight : bold;
         left : 50%;
         margin : 3vh 0 0 -100px;
 
@@ -69,7 +72,6 @@ export const StyledMainTopicAnswerBarContent = style.div`
     max-width : 600px;
     height : 10vh;
     margin : 0 auto;
-
     input[type = "text"]{
         position : absolute;
         height : 10vh;
@@ -81,6 +83,8 @@ export const StyledMainTopicAnswerBarContent = style.div`
         border : none;
         text-align : center;
         font-size : 26px;
+        font-weight : bold;
+
         :focus{
             outline : none;
         }
@@ -101,16 +105,57 @@ export const StyledMainTopicAnswerBarContent = style.div`
         }
     }
 `;
-
-export const StyledMainTopic = style.div`
+export const StyledMainTopicContainer = style.div`
     position : absolute;
-    width : 1000px;
-    height : 650px;
+    width : 1160px;
+    height : 100px;
+    padding : 0 20px;
     left : 50%;
     top : 20%;
-    margin : -5vh 0 0 -500px;
-    
+    margin : 2vh 0 0 -600px;
+    border-radius : 20px;
     animation : show 1s linear;
+
+    .mainTopic{
+        position : absolute;
+        width : inherit;
+        height : inherit;
+        background-color : #fddb3a;
+        border-radius : 20px;
+        cursor : pointer;
+
+        .coverBackground{
+            position : absolute;
+            width : inherit;
+            height : 0;
+            top : 0;
+            left : 0;
+            background-color : black;
+            border-radius : 20px;
+            opacity : 0.4;
+            transition : all .3s linear;
+        }
+
+        .fixedCover{
+            position : absolute;
+            width : 80px;
+            height : 80px;
+            top : 50%;
+            left : 50%;
+            margin : -40px 0 0 -40px;
+            opacity : 0;
+            transition : all .6s linear;
+        }
+
+    }
+    
+    .mainTopic:hover .coverBackground{
+        height : inherit;
+    }
+    .mainTopic:hover .fixedCover{
+        opacity : 0.6;
+        transform : scale(1);
+    }
     @keyframes show{
         from{
             opacity : 0;
@@ -118,36 +163,51 @@ export const StyledMainTopic = style.div`
             opacity : 1;
         }
     }
-
     @media screen and (max-width : 768px){
-        width : 500px;
-        height : 550px;
+        width : 460px;
+        height : 80px;
+        margin-top : 3vh;
         margin-left : -250px;
+        .mainTopic .fixedCover{
+            width : 60px;
+            height : 60px;
+            margin : -30px 0 0 -30px;
+        }
     }
 
     @media screen and (max-width : 414px){
-        width : 350px;
-        height : 500px;
+        width : 310px;
+        height : 70px;
+        margin-top : 5vh;
         margin-left : -175px;
+        .mainTopic .fixedCover{
+            width : 50px;
+            height : 50px;
+            margin : -25px 0 0 -25px;
+        }
     }
 `;
 
 export const StyledMainTopicContent = style.div`
     position : absolute;
-    width : 100%;
-    height : 80px;
-    font-size : 34px;
-    top : 50%;
+    width : inherit;
+    height : inherit;
+    line-height : 100px;
+    font-size : 30px;
     text-align : center;
     font-weight : bold;
-
+    overflow : hidden;
+    text-overflow : ellipsis;
+    white-space : nowrap;
     @media screen and (max-width : 768px){
         height : 74px;
-        font-size : 26px;
+        line-height : 74px;
+        font-size : 24px;
     }
 
     @media screen and (max-width : 414px){
         height : 60px;
-        font-size : 20px;
+        line-height : 60px;
+        font-size : 18px;
     }
 `;
