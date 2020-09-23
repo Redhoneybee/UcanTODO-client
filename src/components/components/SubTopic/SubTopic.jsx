@@ -6,28 +6,28 @@ import React, {
   useMemo,
 } from "react";
 import { SubTopicBar, SubTopicContent } from "./StyledSubTopic";
+import PropTypes from "prop-types";
 import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
 
-import { getTimeInfo } from "../../utils/getDate";
-
-import { MAXSUBTOPICS, SUBTOPICSINFO } from "../../types";
+// utils
+import { getTimeInfo } from "../../utils/useDate";
+import {
+  saveToLocalStorage,
+  loadToLocalStorage,
+} from "../../utils/useLocalStorage";
+// types
+import {
+  STRING,
+  MAXSUBTOPICS,
+  SUBTOPICSINFO,
+  EMPTY_LOCALSTORAGE,
+} from "../../types";
 
 const countToSubTopics = (subTopics) => {
   return subTopics.length;
 };
-const saveToLocalStorage = (subTopics) => {
-  localStorage.setItem(SUBTOPICSINFO, JSON.stringify(subTopics));
-};
-const loadToLocalStorage = () => {
-  if (localStorage.subTopicInfo) {
-    const items = localStorage.getItem(SUBTOPICSINFO);
-    const topics = JSON.parse(items);
 
-    return topics;
-  }
-};
-
-const SubTopic = () => {
+const SubTopic = ({ callback }) => {
   // subTopics is empty and isn't empty
   const isEmptySubTopics = () => {
     // console.log(subTopics);
@@ -45,19 +45,22 @@ const SubTopic = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!isEmptySubTopics()) {
-      subTopics.map((topic) => {
-        if (!topic.desc) {
-          topicRef.current[topic.id - 1].focus();
-        }
-      });
+      subTopics
+        .filter((topic) => !topic.desc)
+        .map((topic) => topicRef.current[topic.id - 1].focus());
     }
 
     if (loading === false) {
-      const loadDatas = loadToLocalStorage();
-      setSubTopics(loadDatas);
+      const loadDatas = loadToLocalStorage(SUBTOPICSINFO);
+      if (typeof loadDatas === STRING && loadDatas === EMPTY_LOCALSTORAGE) {
+        // falid load data
+        setSubTopics([]);
+      } else {
+        setSubTopics(loadDatas);
+      }
       setLoading(true);
     }
-    saveToLocalStorage(subTopics);
+    saveToLocalStorage(SUBTOPICSINFO, subTopics);
   }, [subTopics]);
 
   //   create the subTopic
@@ -73,6 +76,7 @@ const SubTopic = () => {
         id: _id,
         desc: "",
         fixed: true,
+        checked: false,
       };
 
       setSubTopics(subTopics.concat(topic));
@@ -80,6 +84,11 @@ const SubTopic = () => {
     },
     [subTopics]
   );
+
+  //  if fixed is true and desc, desc of localStorage are empty value
+  //  empty desc is erase
+  //  if desc is empty and desc of localStorage is no empty
+  //  localStorage data is use
   const createSubTopic = useCallback(
     (e) => {
       const time = getTimeInfo();
@@ -87,25 +96,26 @@ const SubTopic = () => {
       const _id = Number(e.target.id);
       let _topics = Array.from(subTopics);
       let deleteID = -1;
-      const loadDatas = loadToLocalStorage();
+      const loadDatas = loadToLocalStorage(SUBTOPICSINFO);
       const selectLoadTopic = loadDatas.filter((data) => data.id === _id)[0];
       //   console.log("select data", selectLoadTopic);
-      _topics.map((topic) => {
-        if (topic.id === _id) {
+      _topics
+        .filter((topic) => topic.id === _id)
+        .map((topic) => {
           if (topic.fixed === true && !_desc && !selectLoadTopic.desc) {
             deleteID = topic.id;
           } else if (topic.fixed === true && _desc) {
             topic.desc = _desc;
             topic.fixed = false;
             topic.time = time;
+            topic.checked = false;
           } else if (topic.fixed === true && !_desc && selectLoadTopic.desc) {
             topic.desc = selectLoadTopic.desc;
             topic.fixed = false;
             topic.time = time;
+            topic.checked = selectLoadTopic.checked;
           }
-        }
-      });
-
+        });
       if (deleteID !== -1) {
         _topics.splice(deleteID - 1, 1);
       }
@@ -149,6 +159,13 @@ const SubTopic = () => {
     },
     [subTopics]
   );
+
+  const selectSubTopic = (e) => {
+    const content = e.target.parentNode;
+    const _id = Number(content.id);
+
+    callback(_id);
+  };
   return (
     <SubTopicBar className="box">
       {!isEmptySubTopics() &&
@@ -172,19 +189,27 @@ const SubTopic = () => {
                   <HiPencilAlt className="btn" onClick={updateSubTopic} />
                   <HiOutlineX className="btn" onClick={deleteSubTopic} />
                 </div>
-                <p className="topic">{topic.desc}</p>
+                <div className="topic" onClick={selectSubTopic}>
+                  {topic.desc}
+                </div>
+                {/* <div className="coverBackgroundOfNoChecked" /> */}
+                {/* <HiOutlineCheck className="checkedCoverofNoChecked" /> */}
               </SubTopicContent>
             );
           }
         })}
       <SubTopicContent>
         <div
-          className="plusBtn"
+          className="add-btn"
           onClick={createEmptySubTopic}
         >{`${topicCount}/${MAXSUBTOPICS}`}</div>
       </SubTopicContent>
     </SubTopicBar>
   );
+};
+
+SubTopic.propTypes = {
+  callback: PropTypes.func,
 };
 
 export default SubTopic;

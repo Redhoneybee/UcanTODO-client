@@ -1,0 +1,39 @@
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: all 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+.ReactModal__Content {
+  width: 500px;
+  height: 500px;
+  margin: auto;
+}
+.modal-body {
+  position: absolute;
+  display: -webkit-box;
+  width: inherit;
+  height: inherit;
+  overflow: auto;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  font-size: 24px;
+}
+
+@media screen and (max-width: 786px) {
+  .ReactModal__Content {
+    width: 400px;
+    height: 500px;
+  }
+}
+@media screen and (max-width: 414px) {
+  .ReactModal__Content {
+    width: 300px;
+  }
+}

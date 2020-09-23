@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import Modal from "../components/Modal/Modal";
+
 import MainView from "../components/MainView/MainView";
 import MainTopic from "../components/MainTopic/MainTopic";
 import SubTopic from "../components/SubTopic/SubTopic";
@@ -15,6 +17,7 @@ import {
   MAINTOPICINFO,
   SUBTOPICSINFO,
   EMPTY_LOCALSTORAGE,
+  NO_SELECT_SUBTOPIC,
 } from "../types";
 
 const Home = () => {
@@ -23,6 +26,7 @@ const Home = () => {
     desc: "",
   };
   const [mainTopic, setMainTopic] = useState(initializedTopic);
+  const [subTopicId, setSubTopicId] = useState(NO_SELECT_SUBTOPIC);
   const [loading, setLoading] = useState(false);
   // mainTopic is empty and isn't empty
   const isEmptyMainTopic = () => {
@@ -95,16 +99,23 @@ const Home = () => {
     console.log("hi");
   };
 
+  const showDetailSubTopic = (_subTopicId) => {
+    setSubTopicId(_subTopicId);
+  };
   return (
     <MainView>
+      {!isEmptyMainTopic() && (
+        <Modal subTopicId={subTopicId} callback={showDetailSubTopic}></Modal>
+      )}
       <MainTopic
         isEmptyMainTopic={isEmptyMainTopic}
         callback={createMainTopic}
         mainTopic={mainTopic.desc}
       ></MainTopic>
-      {!isEmptyMainTopic() && <SubTopic></SubTopic>}
+      {!isEmptyMainTopic() && (
+        <SubTopic callback={showDetailSubTopic}></SubTopic>
+      )}
     </MainView>
   );
 };
-
 export default Home;
