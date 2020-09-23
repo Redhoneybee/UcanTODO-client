@@ -1,46 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   StyledMainTopicAnswerBar,
   StyledMainTopicAnswerBarContent,
-  StyledMainTopic,
+  StyledMainTopicContainer,
   StyledMainTopicContent,
 } from "./StyledMainTopic";
+import { GrConfigure } from "react-icons/gr";
+
+// import types
+import { MAXTOPICLEN } from "../../types";
+const countFontLength = (topic) => {
+  return topic.length;
+};
 
 const MainTopic = ({ isEmptyMainTopic, callback, mainTopic }) => {
   const [state, setState] = useState({
-    maintopic: "",
+    topic: "",
     disabled: true,
   });
 
-  const handlerChange = (e) => {
-    const { value } = e.target;
+  // init main topic
+  const initMainTopic = (e) => {
+    callback("");
+  };
+
+  const changeMainTopic = (e) => {
+    const topic = e.target.value;
     // console.log(state.maintopic, state.disabled);
-    setState((prev) => ({
-      ...prev,
-      maintopic: value,
-    }));
-
-    const valueLen = state.maintopic.length;
-    if (valueLen >= 4) {
-      setState((prev) => ({
-        ...prev,
-        disabled: false,
-      }));
+    const topicLen = countFontLength(topic);
+    console.log(state);
+    let _state = Array.from(state);
+    if (topicLen > MAXTOPICLEN) {
+      // topic len is limite
+      _state.topic = state.topic;
+      _state.disabled = true;
+    } else if (topicLen >= 4) {
+      _state.topic = topic;
+      _state.disabled = false;
     } else {
-      setState((prev) => ({
-        ...prev,
-        disabled: true,
-      }));
+      _state.topic = topic;
+      _state.disabled = true;
     }
+
+    setState(_state);
   };
 
-  const handlerClick = (e) => {
-    e.preventDefault();
-
-    if (state.maintopic) callback(state.maintopic);
+  const createMainTopic = (e) => {
+    // console.log(state.topic);
+    if (state.topic) callback(state.topic);
   };
-
+  const count = useMemo(() => countFontLength(state.topic), [state]);
   return (
     <div>
       {isEmptyMainTopic() && (
@@ -50,20 +60,27 @@ const MainTopic = ({ isEmptyMainTopic, callback, mainTopic }) => {
               type="text"
               placeholder="what's your focus in today ?"
               name="maintopic"
-              onChange={handlerChange}
+              onChange={changeMainTopic}
+              value={state.topic}
             />
           </StyledMainTopicAnswerBarContent>
           <button
             disabled={state.disabled}
             className={state.disabled ? "buttonDisabled" : "buttonEnabled"}
-            onClick={handlerClick}
-          ></button>
+            onClick={createMainTopic}
+          >
+            {count}
+          </button>
         </StyledMainTopicAnswerBar>
       )}
       {!isEmptyMainTopic() && (
-        <StyledMainTopic>
-          <StyledMainTopicContent>{mainTopic}</StyledMainTopicContent>
-        </StyledMainTopic>
+        <StyledMainTopicContainer onClick={initMainTopic}>
+          <div className="mainTopic">
+            <StyledMainTopicContent>{mainTopic}</StyledMainTopicContent>
+            <div className="coverBackground" />
+            <GrConfigure className="fixedCover" />
+          </div>
+        </StyledMainTopicContainer>
       )}
     </div>
   );
